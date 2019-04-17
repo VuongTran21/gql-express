@@ -7,6 +7,8 @@ var schema = buildSchema(`
     type Query {
         course(id: Int!): Course
         courses(topic: String): [Course]
+        author(authorId: Int!): Author
+        authors: [Author]
     },
     type Mutation {
         updateCourseTopic(id: Int!, topic: String!): Course
@@ -18,6 +20,10 @@ var schema = buildSchema(`
         description: String,
         topic: String,
         url: String
+    },
+    type Author {
+        id: Int,
+        name: String
     }
 `);
 
@@ -25,7 +31,7 @@ var coursesData = [
     {
         id: 1,
         title: 'The Complete Node.js Developer Course',
-        author: 'Andrew Mead, Rob Percival',
+        author: 1,
         description: 'Learn Node.js by building real-world applications with Node, Express, MongoDB, Mocha, and more!',
         topic: 'Node.js',
         url: 'https://codingthesmartway.com/courses/nodejs/'
@@ -33,7 +39,7 @@ var coursesData = [
     {
         id: 2,
         title: 'Node.js, Express & MongoDB Dev to Deployment',
-        author: 'Brad Traversy',
+        author: 1,
         description: 'Learn by example building & deploying real-world Node.js applications from absolute scratch',
         topic: 'Node.js',
         url: 'https://codingthesmartway.com/courses/nodejs-express-mongodb/'
@@ -41,12 +47,39 @@ var coursesData = [
     {
         id: 3,
         title: 'JavaScript: Understanding The Weird Parts',
-        author: 'Anthony Alicea',
+        author: 2,
         description: 'An advanced JavaScript course for everyone! Scope, closures, prototypes, this, build your own framework, and more.',
         topic: 'JavaScript',
         url: 'https://codingthesmartway.com/courses/understand-javascript/'
     }
 ];
+
+var authorsData = [
+    {
+        id: 1,
+        name: 'Andrew Mead'
+    },
+    {
+        id: 2,
+        name: 'Brad Traversy'
+    },
+    {
+        id: 3,
+        name: 'Rob Percival'
+    },
+    {
+        id: 4,
+        name: 'Anthony Alicea'
+    }
+];
+
+var getAuthor = function({authorId}) {
+    return authorsData.filter(author => author.id === authorId)[0];
+}
+
+var getAuthors = function() {
+    return authorsData;
+}
 
 var getCourse = function(args) {
     var id = args.id;
@@ -80,7 +113,9 @@ var updateCourseTopic = function({id, topic}) {
 var root = {
     course: getCourse,
     courses: getCourses,
-    updateCourseTopic
+    updateCourseTopic,
+    author: getAuthor,
+    authors: getAuthors
 };
 
 // Create an express server and a GraphQL endpoint
